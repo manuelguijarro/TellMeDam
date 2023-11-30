@@ -8,11 +8,11 @@
     <children>
         <Label text="Registro" />
       <Label text="Nombre de usuario:" />
-      <TextField fx:id="nombreUsuario" promptText="Nombre " />
+      <TextField fx:id="nombreUsuarioTextField" promptText="Nombre " />
       <Label text="Email de usuario:" />
-      <TextField fx:id="emailUsuario" promptText="Email" />
+      <TextField fx:id="emailUsuarioTextField" promptText="Email" />
       <Label text="Contraseña de usuario:" />
-      <TextField fx:id="contraseniaUsuario" promptText="Contraseña" />
+      <TextField fx:id="contraseniaUsuarioTextField" promptText="Contraseña" />
       <HBox prefHeight="0.0" prefWidth="200.0" spacing="47.0">
          <children>
              <Button fx:id="secondaryButton" onAction="#switchToLogin" text="Volver" />

@@ -8,13 +8,13 @@
    <children>
       <Label text="Primary View" />
       <Label text="Email usuario:" />
-      <TextField promptText="Email" />
+      <TextField fx:id="emailUsuario" promptText="Email" />
       <Label text="Contraseña usuario:" />
-      <TextField promptText="Contraseña" />
+      <TextField fx:id="contraseniaUsario" promptText="Contraseña" />
       <HBox prefHeight="0.0" prefWidth="200.0" spacing="21.0">
          <children>
-            <Button mnemonicParsing="false" text="Iniciar Sesión" />
-            <Button fx:id="primaryButton" onAction="#switchToRegistro" text="Registro" textAlignment="CENTER" />
+            <Button fx:id="secundaryButton" onAction="#switchToInicio" text="Iniciar Sesión" />
+            <Button fx:id="primaryButton" onAction="#switchToRegistro" text="Registro"/>
          </children>
       </HBox>
    </children>
