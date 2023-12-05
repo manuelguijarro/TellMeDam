@@ -20,6 +20,8 @@ public class LoginController {
             public void onSuccess(Object response) throws IOException {
                 System.out.println(response);
                 System.out.println("Exito en el login");
+                //Enviar a inicioPagina
+                App.setRoot("inicio");
             }
 
             @Override
@@ -27,8 +29,7 @@ public class LoginController {
                 System.out.println(error);
             }
         });
-        //Enviar a inicioPagina
-        App.setRoot("registro");
+
     }
     @FXML
     private void switchToRegistro() throws IOException {
