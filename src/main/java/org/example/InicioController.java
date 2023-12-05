@@ -30,8 +30,5 @@ public class InicioController {
         //Enviar a inicioPagina
         App.setRoot("registro");
     }
-    @FXML
-    private void switchToRegistro() throws IOException {
-        App.setRoot("registro");
-    }
+    
 }
