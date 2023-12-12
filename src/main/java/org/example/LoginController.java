@@ -3,6 +3,9 @@ package org.example;
 import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import org.example.model.User;
+
+import static org.example.App.userMain;
 
 public class LoginController {
     @FXML
@@ -19,6 +22,7 @@ public class LoginController {
             @Override
             public void onSuccess(Object response) throws IOException {
                 System.out.println(response);
+                //userMain = (User) response;
                 System.out.println("Exito en el login");
                 //Enviar a inicioPagina
                 App.setRoot("inicio");

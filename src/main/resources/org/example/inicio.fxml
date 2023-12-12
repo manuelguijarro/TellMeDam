@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
 <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.InicioController">
-   <ListView fx:id="listViewId" prefHeight="439.0" prefWidth="233.0" />
-    <TextArea fx:id="fileContentTextArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+   <VBox prefHeight="200.0" prefWidth="212.0">
+      <children>
+         <Label text="Nuevo Chat" textAlignment="CENTER" />
+         <ListView fx:id="listViewIdNuevo" prefHeight="439.0" prefWidth="137.0" />
+         <Label layoutX="10.0" layoutY="10.0" text="historial chat" textAlignment="CENTER" />
+         <ListView fx:id="listViewIdHistorial" layoutX="10.0" layoutY="10.0" prefHeight="439.0" prefWidth="233.0" />
+      </children>
+   </VBox>
+    <TextArea fx:id="fileContentTextArea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="284.0" HBox.hgrow="ALWAYS">
     </TextArea>
 </HBox>

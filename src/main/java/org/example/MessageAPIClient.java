@@ -1,7 +1,7 @@
-package org.example;
+package org.example.api;
 
 import com.google.gson.Gson;
-import org.example.model.Message;
+import org.example.api.model.Message;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
