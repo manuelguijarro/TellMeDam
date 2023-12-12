@@ -22,7 +22,7 @@ public class LoginController {
             @Override
             public void onSuccess(Object response) throws IOException {
                 System.out.println(response);
-                //userMain = (User) response;
+                userMain = (User) response;
                 System.out.println("Exito en el login");
                 //Enviar a inicioPagina
                 App.setRoot("inicio");

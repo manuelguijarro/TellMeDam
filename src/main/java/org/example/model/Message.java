@@ -38,4 +38,9 @@ public class Message {
     public void setIdsender(Integer idsender) {
         this.idsender = idsender;
     }
+    @Override
+    public String toString() {
+    // TODO Auto-generated method stub
+    return this.getContent();
+    }
 }

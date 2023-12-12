@@ -1,12 +1,12 @@
-package org.example.api;
+package org.example;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import javafx.application.Platform;
-import org.example.api.model.Chat;
-import org.example.api.model.Error;
-import org.example.api.model.User;
+import org.example.model.Chat;
+import org.example.model.Error;
+import org.example.model.User;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;

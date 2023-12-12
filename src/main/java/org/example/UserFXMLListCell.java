@@ -5,7 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
 import org.example.model.User;
 
-public class CustomFXMLListCell extends ListCell<User> {
+public class UserFXMLListCell extends ListCell<User> {
 
   @Override
   public void updateItem(User user, boolean empty) {

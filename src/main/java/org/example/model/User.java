@@ -62,8 +62,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                '}';
+        return this.photourl + " " + this.username;
     }
 }

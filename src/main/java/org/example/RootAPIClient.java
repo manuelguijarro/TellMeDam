@@ -1,4 +1,4 @@
-package org.example.api;
+package org.example;
 
 import com.google.gson.Gson;
 import javafx.application.Platform;
