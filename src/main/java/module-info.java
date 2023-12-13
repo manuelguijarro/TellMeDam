@@ -13,4 +13,10 @@ module org.example {
     opens org.example.model to com.google.gson, javafx.fxml;
 
     exports org.example;
+    exports org.example.controller;
+    opens org.example.controller to com.google.gson, javafx.fxml;
+    exports org.example.api;
+    opens org.example.api to com.google.gson, javafx.fxml;
+    exports org.example.listCell;
+    opens org.example.listCell to com.google.gson, javafx.fxml;
 }

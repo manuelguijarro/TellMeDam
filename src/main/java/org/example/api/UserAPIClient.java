@@ -1,4 +1,4 @@
-package org.example;
+package org.example.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -140,7 +140,15 @@ public class UserAPIClient extends RootAPIClient {
         if (response.statusCode() != 200) {
             Gson gson = new Gson();
             Error error = gson.fromJson(response.body(), Error.class);
-            Platform.runLater(() -> callback.onError(error));
+            Platform.runLater(() -> {
+                try {
+                    callback.onError(error);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         } else {
             Gson gson = new Gson();
             User userLogged = gson.fromJson(response.body(), User.class);
@@ -175,7 +183,15 @@ public class UserAPIClient extends RootAPIClient {
         } else {
             Gson gson = new Gson();
             Error error = gson.fromJson(response.body(), Error.class);
-            Platform.runLater(() -> callback.onError(error));
+            Platform.runLater(() -> {
+                try {
+                    callback.onError(error);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
 
     }
@@ -220,7 +236,15 @@ public class UserAPIClient extends RootAPIClient {
         } else {
             Map<String, String> errors = new HashMap<>();
             errors.put("error", jsonNode.get("error").asText());
-            Platform.runLater(() -> callback.onError(errors));
+            Platform.runLater(() -> {
+                try {
+                    callback.onError(errors);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 

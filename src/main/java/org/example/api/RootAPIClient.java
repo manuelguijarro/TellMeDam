@@ -1,4 +1,4 @@
-package org.example;
+package org.example.api;
 
 import com.google.gson.Gson;
 import javafx.application.Platform;
@@ -78,7 +78,15 @@ public class RootAPIClient {
     }
 
     protected void onError(APICallback callback, Object error) {
-        Platform.runLater(() -> callback.onError(error));
+        Platform.runLater(() -> {
+            try {
+                callback.onError(error);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 }

@@ -1,0 +1,11 @@
+
+Wed Dec 13 16:51:31 CET 2023 Failed registration: 1234 no es una contraseña válida.
+Wed Dec 13 17:01:46 CET 2023: manu@mgi no es un email válido
+Wed Dec 13 17:01:59 CET 2023: Manu no es una contraseña válida
+Wed Dec 13 17:07:19 CET 2023: Failed registration[campos vacios]: '' o '' no pueden estar vacíos.
+Wed Dec 13 17:09:24 CET 2023: Failed registration[campos vacios]: email o contraseña no pueden estar vacíos.
+Wed Dec 13 17:09:34 CET 2023: Failed registration[campos vacios]: email o contraseña no pueden estar vacíos.
+Wed Dec 13 17:09:39 CET 2023: Failed registration[campos vacios]: email o contraseña no pueden estar vacíos.
+Wed Dec 13 17:09:47 CET 2023: Failed registration[email]: 'manu' no es un email válido.
+Wed Dec 13 17:09:54 CET 2023: Failed registration[contraseña]: 'manuel' no es una contraseña válida.
+Wed Dec 13 17:40:02 CET 2023: Failed registration[campos vacios]: email o contraseña no pueden estar vacíos.

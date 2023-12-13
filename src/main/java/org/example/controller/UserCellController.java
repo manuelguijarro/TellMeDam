@@ -1,4 +1,4 @@
-package org.example;
+package org.example.controller;
 
 
 import java.util.ResourceBundle;
@@ -17,11 +17,12 @@ public class UserCellController {
 
     public void setDatosUsuario(String imgUsuario, String nombreUsuario) {
       Image image = new Image(imgUsuario);
-      imagenUsuarioId = new ImageView(image);
+      imagenUsuarioId = new ImageView();
+      imagenUsuarioId.setImage(image);
       imagenUsuarioId.setFitHeight(100);
       imagenUsuarioId.setFitWidth(200);
-
-        nombreUsuarioId.setText(nombreUsuario);
+      imagenUsuarioId.setVisible(true);
+      nombreUsuarioId.setText(nombreUsuario);
     }
 }
 

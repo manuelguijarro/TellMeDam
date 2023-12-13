@@ -1,4 +1,4 @@
-package org.example;
+package org.example.api;
 
 import com.google.gson.Gson;
 import org.example.model.Message;

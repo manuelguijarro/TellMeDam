@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.LoginController">
+<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.LoginController">
    <children>
-      <Label text="Primary View" />
+      <HBox maxWidth="1.7976931348623157E308" minWidth="640" prefHeight="100.0">
+         <children>
+            <Label fx:id="tituloApp"   alignment="CENTER" contentDisplay="CENTER" prefHeight="102.0" prefWidth="655.0"  text="InstaDam" textAlignment="CENTER">
+               <font>
+                  <Font name="Dhurjati" size="49.0" />
+               </font>
+            </Label>
+         </children></HBox>
       <Label text="Email usuario:" />
       <TextField fx:id="emailUsuario" promptText="Email" />
       <Label text="Contraseña usuario:" />
@@ -14,7 +25,7 @@
       <HBox prefHeight="0.0" prefWidth="200.0" spacing="21.0">
          <children>
             <Button fx:id="secundaryButton" onAction="#switchToInicio" text="Iniciar Sesión" />
-            <Button fx:id="primaryButton" onAction="#switchToRegistro" text="Registro"/>
+            <Button fx:id="primaryButton" onAction="#switchToRegistro" text="Registro" />
          </children>
       </HBox>
    </children>

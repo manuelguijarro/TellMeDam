@@ -1,19 +1,13 @@
-package org.example;
+package org.example.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import javafx.application.Platform;
 import org.example.model.Chat;
 import org.example.model.Error;
-import org.example.model.User;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ChatAPIClient extends RootAPIClient {
     public void createChat(Integer userId, Integer otherUserId, APICallback callback) {

@@ -1,8 +1,9 @@
-package org.example;
+package org.example.listCell;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
+import org.example.controller.UserCellController;
 import org.example.model.User;
 
 public class UserFXMLListCell extends ListCell<User> {
