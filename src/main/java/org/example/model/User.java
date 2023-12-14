@@ -62,6 +62,9 @@ public class User {
 
     @Override
     public String toString() {
-        return this.photourl + " " + this.username;
+      return "User [email=" + email + ", id=" + id + ", password=" + password + ", photourl=" + photourl + ", username="
+          + username + "]";
     }
+
+   
 }

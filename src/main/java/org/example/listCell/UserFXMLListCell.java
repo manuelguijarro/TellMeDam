@@ -3,6 +3,7 @@ package org.example.listCell;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.ListCell;
+import org.example.App;
 import org.example.controller.UserCellController;
 import org.example.model.User;
 
@@ -16,7 +17,7 @@ public class UserFXMLListCell extends ListCell<User> {
       setGraphic(null);
     } else {
       try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("userFXMLListCell.fxml"));
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("userFXMLListCell.fxml"));
         Parent root = loader.load();
         UserCellController userCellController = loader.getController();
         userCellController.setDatosUsuario(user.getPhotourl(), user.getUsername());

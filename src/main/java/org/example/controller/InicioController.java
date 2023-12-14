@@ -12,6 +12,7 @@ import org.example.api.MessageAPIClient;
 import org.example.api.UserAPIClient;
 import org.example.listCell.ChatFXMLListCell;
 import org.example.listCell.MessageFXMLListCell;
+import org.example.listCell.UserFXMLListCell;
 import org.example.model.Chat;
 import org.example.model.Message;
 import org.example.model.User;
@@ -21,7 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import io.github.palexdev.materialfx.controls.base.Themable;
+import javafx.scene.Parent;
+import javafx.scene.layout.BorderPane;
 public class InicioController {
 
     @FXML
@@ -71,8 +74,7 @@ public class InicioController {
                     throw new RuntimeException(e);
                 }
             }
-        }, 0, 2000); // 0 indica el retraso inicial, y 2000 indica el intervalo en milisegundos (2 segundos)
-
+        }, 0, 2000);
     }
 
     private void initializeComponents() {
@@ -298,6 +300,8 @@ public class InicioController {
                 List<User> users = (List<User>) response;
                 usuariosDisponibles.setAll(users);
                 listViewIdNuevo.setItems(usuariosDisponibles);
+                listViewIdNuevo.setCellFactory(param -> new UserFXMLListCell());
+
             }
 
             @Override
