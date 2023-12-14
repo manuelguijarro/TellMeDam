@@ -10,29 +10,27 @@ import org.example.controller.MessageCellController;
 import org.example.model.Message;
 
 public class MessageFXMLListCell extends ListCell<Message> {
-  private MessageCellController messageCellController;
 
   @Override
-  public void updateItem(Message message, boolean empty) {
-    //export message
-    if (message != null) {
-        String exportedMessage = message.getContent();
-        // TODO: Export the message to a file or perform any other necessary action
-        System.out.println("Exported message: " + exportedMessage);
-    }
+  protected void updateItem(Message message, boolean empty) {
     super.updateItem(message, empty);
+
+    
     if (empty || message == null) {
       setText(null);
       setGraphic(null);
     } else {
       try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("messageFXMLListCell.fxml"));
-        Parent root = loader.load();
-        messageCellController = loader.getController();
-        messageCellController.mostrarChat(message.getContent(), message.getIdsender());
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/view/messageFXMLListCell.fxml"));
+Parent root = loader.load();
+        MessageCellController controller = loader.getController();
+        controller.mostrarChat(message.getContent(), message.getIdsender());
         setGraphic(root);
-      } catch (Exception e) {
         
+      } catch (Exception e) {
+        System.out.println("Error al cargar graficos");
+        e.printStackTrace();
+        setGraphic(null); // Establecer como nulo en caso de error
       }
     }
   }

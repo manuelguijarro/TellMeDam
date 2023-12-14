@@ -10,6 +10,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
 
+import org.example.App;
 import org.example.api.APICallback;
 import org.example.api.ChatAPIClient;
 import org.example.api.MessageAPIClient;
@@ -28,6 +29,8 @@ import static org.example.App.userMain;
 
 public class InicioController {
 
+  @FXML
+  private Button botonCerrarSesion;
   @FXML
   private Label nombreChatId;
   @FXML
@@ -59,20 +62,34 @@ public class InicioController {
   private ObservableList<Message> mensajesDisponibles = FXCollections.observableArrayList();
   private Map<Integer, List<Message>> chatMessagesMap = new HashMap<>();
 
-  @FXML
-  public void initialize() throws IOException, InterruptedException {
-    bienvenidoUsuario.setText("Bienvenido don " + userMain.getUsername());
-    userAPIClient = new UserAPIClient();
-    chatAPIClient = new ChatAPIClient();
-    messageAPIClient = new MessageAPIClient();
-    initializeBotonBorrarChat();
-    initializeListViewNuevo();
-    initializeListViewHistorial();
-    initializeBotonEnviar();
-    initializeUserList();
-    initializeChatList();
-    initializeBotonEditarPerfil();
-  }
+@FXML
+public void initialize() throws IOException, InterruptedException {
+  bienvenidoUsuario.setText("Bienvenido don " + userMain.getUsername());
+  userAPIClient = new UserAPIClient();
+  chatAPIClient = new ChatAPIClient();
+  messageAPIClient = new MessageAPIClient();
+  initializeComponents();
+}
+
+private void initializeComponents() throws IOException, InterruptedException {
+  initializeBotonBorrarChat();
+  initializeListViewNuevo();
+  initializeListViewHistorial();
+  initializeBotonEnviar();
+  initializeUserList();
+  initializeChatList();
+  initializeBotonEditarPerfil();
+  initializebotonCerrarSesion();
+}
+private void cambiarInicio() throws IOException {
+    userMain = null;
+    try {
+        Thread.sleep(3000);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    App.setRoot("login");
+}
 
   private void initializeListViewNuevo() {
     listViewIdNuevo.setOnMouseClicked(mouseEvent -> {
@@ -112,40 +129,43 @@ public class InicioController {
   }
 
   private void mostrarMensajes() {
-      ObservableList<Message> mensajesDisponibles = FXCollections.observableArrayList();
-      try {
-      messageAPIClient.getMessagesFromChat(idChat, new APICallback() {
-        @Override
-        public void onSuccess(Object response) throws IOException {
-          List<Message> messages = (List<Message>) response;
-          // sort messages
-          messages.sort((o1, o2) -> o1.getId().compareTo(o2.getId()));
-          for (Message message : messages) {
-            mensajesDisponibles.add(message);
-            
-          }
-          //listViewIdMensajes.setItems(mensajesDisponibles);
-          //PREPARAR SET.CELL.FACTORY PARA poder entrar en los metodos de cada item
-          //Solucionar este problema
-          //listViewIdMensajes.setItems(mensajesDisponibles);
-          listViewIdMensajes.setCellFactory(param -> new MessageFXMLListCell());
-          listViewIdMensajes.setItems(mensajesDisponibles);
-          
-          
-          //listViewIdMensajes.setItems(mensajesDisponibles);
+    ObservableList<Message> mensajesDisponibles = FXCollections.observableArrayList();
+    try {
+        messageAPIClient.getMessagesFromChat(idChat, new APICallback() {
+            @Override
+            public void onSuccess(Object response) throws IOException {
+                List<Message> messages = (List<Message>) response;
+                // sort messages
+                messages.sort((o1, o2) -> o1.getId().compareTo(o2.getId()));
+                mensajesDisponibles.setAll(messages);
 
-        }
+                // Configurar la celda de fábrica fuera del bucle
+                listViewIdMensajes.setCellFactory(param -> new MessageFXMLListCell());
 
-        @Override
-        public void onError(Object error) {
+                // Configurar la lista de mensajes después de la configuración de la celda
+                listViewIdMensajes.setItems(mensajesDisponibles);
+            }
 
-        }
-      });
+            @Override
+            public void onError(Object error) {
+                // Manejar el error según tus necesidades
+            }
+        });
     } catch (IOException e) {
-      throw new RuntimeException(e);
+        throw new RuntimeException(e);
     }
-  }
+}
 
+  private void initializebotonCerrarSesion() {
+    botonCerrarSesion.setOnMouseClicked(mouseEvent ->{
+     try {
+      cambiarInicio();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    });
+  }
   private void initializeBotonBorrarChat() {
     botonBorrarChat.setOnMouseClicked(mouseEvent -> {
       
@@ -269,5 +289,6 @@ public class InicioController {
       }
 
     });
+
   }
 }

@@ -17,8 +17,11 @@ public class MessageCellController {
     public void mostrarChat(String mensajeChat, int idSender) {
 
 
-          // change color text nombreChatid to blue
-            nombreChatId.setText(mensajeChat);
+        // Cambiar el color del texto de nombreChatId a azul
+        // (Asegúrate de que el estilo no haga que el texto sea invisible o del mismo color que el fondo)
+
+        // Mostrar el mensaje en el Label
+        nombreChatId.setText(mensajeChat);
 
 
 
