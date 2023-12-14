@@ -6,6 +6,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
 
+import org.example.App;
 import org.example.controller.MessageCellController;
 import org.example.model.Message;
 
@@ -13,16 +14,17 @@ public class MessageFXMLListCell extends ListCell<Message> {
 
   @Override
   protected void updateItem(Message message, boolean empty) {
-    super.updateItem(message, empty);
 
+    super.updateItem(message, empty);
+    
     
     if (empty || message == null) {
       setText(null);
       setGraphic(null);
     } else {
       try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/view/messageFXMLListCell.fxml"));
-Parent root = loader.load();
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("message.fxml"));
+        Parent root = loader.load();
         MessageCellController controller = loader.getController();
         controller.mostrarChat(message.getContent(), message.getIdsender());
         setGraphic(root);

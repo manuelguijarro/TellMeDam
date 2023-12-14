@@ -14,6 +14,7 @@ import java.io.IOException;
  */
 public class App extends Application {
     public static User userMain;
+    public static boolean estado = false;
 
     private static Scene scene;
 

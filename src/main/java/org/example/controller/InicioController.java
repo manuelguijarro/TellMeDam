@@ -3,292 +3,329 @@ package org.example.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.util.Callback;
-
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import org.example.App;
 import org.example.api.APICallback;
 import org.example.api.ChatAPIClient;
 import org.example.api.MessageAPIClient;
 import org.example.api.UserAPIClient;
+import org.example.listCell.ChatFXMLListCell;
 import org.example.listCell.MessageFXMLListCell;
 import org.example.model.Chat;
 import org.example.model.Message;
 import org.example.model.User;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static org.example.App.userMain;
+import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class InicioController {
 
-  @FXML
-  private Button botonCerrarSesion;
-  @FXML
-  private Label nombreChatId;
-  @FXML
-  private Label bienvenidoUsuario;
-  private ChatAPIClient chatAPIClient;
-  private UserAPIClient userAPIClient;
-  private MessageAPIClient messageAPIClient;
+    @FXML
+    private Button botonCerrarSesion;
+    @FXML
+    private Label nombreChatId;
+    @FXML
+    private Label bienvenidoUsuario;
+    @FXML
+    private ListView<User> listViewIdNuevo;
+    @FXML
+    private ListView<Chat> listViewIdHistorial;
+    @FXML
+    private ListView<Message> listViewIdMensajes;
+    @FXML
+    private Button botonEnviarId;
+    @FXML
+    private Button botonEditarPerfil;
+    @FXML
+    private Button botonBorrarChat;
+    @FXML
+    private TextField contenedorMensajeId;
 
-  @FXML
-  private ListView<User> listViewIdNuevo;
-  @FXML
-  private ListView<Chat> listViewIdHistorial;
-  @FXML
-  private ListView<Message> listViewIdMensajes;
-  @FXML
-  private Button botonEnviarId;
-  @FXML
-  private Button botonEditarPerfil;
-  @FXML
-  private Button botonBorrarChat;
-
-  public static int idChat = 0;
-
-  @FXML
-  private TextField contenedorMensajeId;
-  
-  private ObservableList<User> usuariosDisponibles = FXCollections.observableArrayList();
-  private ObservableList<Chat> chatsDisponibles = FXCollections.observableArrayList();
+    private UserAPIClient userAPIClient;
+    private ChatAPIClient chatAPIClient;
+    private MessageAPIClient messageAPIClient;
   private ObservableList<Message> mensajesDisponibles = FXCollections.observableArrayList();
-  private Map<Integer, List<Message>> chatMessagesMap = new HashMap<>();
+    private ObservableList<User> usuariosDisponibles = FXCollections.observableArrayList();
+    private ObservableList<Chat> chatsDisponibles = FXCollections.observableArrayList();
 
-@FXML
-public void initialize() throws IOException, InterruptedException {
-  bienvenidoUsuario.setText("Bienvenido don " + userMain.getUsername());
-  userAPIClient = new UserAPIClient();
-  chatAPIClient = new ChatAPIClient();
-  messageAPIClient = new MessageAPIClient();
-  initializeComponents();
-}
+    private int idChat = 0;
 
-private void initializeComponents() throws IOException, InterruptedException {
-  initializeBotonBorrarChat();
-  initializeListViewNuevo();
-  initializeListViewHistorial();
-  initializeBotonEnviar();
-  initializeUserList();
-  initializeChatList();
-  initializeBotonEditarPerfil();
-  initializebotonCerrarSesion();
-}
-private void cambiarInicio() throws IOException {
-    userMain = null;
-    try {
-        Thread.sleep(3000);
-    } catch (InterruptedException e) {
-        e.printStackTrace();
+    @FXML
+    public void initialize() throws IOException, InterruptedException {
+        bienvenidoUsuario.setText("Bienvenido don " + App.userMain.getUsername());
+        userAPIClient = new UserAPIClient();
+        chatAPIClient = new ChatAPIClient();
+        messageAPIClient = new MessageAPIClient();
+        initializeComponents();
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                System.out.println("Ejecutando carga de chats cada 2 segundos");
+                try {
+                    mostrarMensajesAPI();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }, 0, 2000); // 0 indica el retraso inicial, y 2000 indica el intervalo en milisegundos (2 segundos)
+
     }
-    App.setRoot("login");
-}
 
-  private void initializeListViewNuevo() {
-    listViewIdNuevo.setOnMouseClicked(mouseEvent -> {
-      int idUser = ((User) listViewIdNuevo.getSelectionModel().getSelectedItem()).getId();
-
-      chatAPIClient.createChat(userMain.getId(), idUser, new APICallback() {
-        @Override
-        public void onSuccess(Object response) throws IOException {
-          System.out.println(response);
-
-        }
-
-        @Override
-        public void onError(Object error) {
-
-        }
-      });
-    });
-  }
-
-  private void comprobarNombreChat(ObservableList<Message> mensajesDisponibles) {
-    int idUsuario = listViewIdHistorial.getSelectionModel().getSelectedItem().getUser1_id();
-    idChat = ((Chat) listViewIdHistorial.getSelectionModel().getSelectedItem()).getId();
-    if (idUsuario == userMain.getId()) {
-      nombreChatId.setText(listViewIdHistorial.getSelectionModel().getSelectedItem().getUser2_username());
-    } else {
-      nombreChatId.setText(listViewIdHistorial.getSelectionModel().getSelectedItem().getUser1_username());
+    private void initializeComponents() {
+        initializeMostrarMensajes();
+        initializeBotonBorrarChat();
+        initializeCrearNuevoChat();
+        initializeBotonEnviar();
+        initializeListaUsuario();
+        initializeListaChat();
+        initializeBotonEditarPerfil();
+        initializebotonCerrarSesion();
     }
-  }
 
-  private void initializeListViewHistorial() {
-    listViewIdHistorial.setOnMouseClicked(mouseEvent -> {
-      ObservableList<Message> mensajesDisponibles = FXCollections.observableArrayList();
-      comprobarNombreChat(mensajesDisponibles);
-      mostrarMensajes();
-    });
-  }
+    private void initializeBotonBorrarChat() {
+        botonBorrarChat.setOnMouseClicked(this::borrarChat);
+    }
 
-  private void mostrarMensajes() {
-    ObservableList<Message> mensajesDisponibles = FXCollections.observableArrayList();
-    try {
-        messageAPIClient.getMessagesFromChat(idChat, new APICallback() {
+    private void borrarChat(MouseEvent mouseEvent) {
+        try {
+            limpiarChatAPI();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void limpiarChatAPI() {
+        chatAPIClient.cleanChat(idChat, new APICallback() {
             @Override
             public void onSuccess(Object response) throws IOException {
-                List<Message> messages = (List<Message>) response;
-                // sort messages
-                messages.sort((o1, o2) -> o1.getId().compareTo(o2.getId()));
-                mensajesDisponibles.setAll(messages);
-
-                // Configurar la celda de fábrica fuera del bucle
-                listViewIdMensajes.setCellFactory(param -> new MessageFXMLListCell());
-
-                // Configurar la lista de mensajes después de la configuración de la celda
-                listViewIdMensajes.setItems(mensajesDisponibles);
+                System.out.println("Chat limpiado correctamente");
+                eliminarChatAPI();
             }
 
             @Override
             public void onError(Object error) {
-                // Manejar el error según tus necesidades
+                System.out.println("Error al limpiar el chat");
             }
         });
-    } catch (IOException e) {
-        throw new RuntimeException(e);
     }
-}
 
-  private void initializebotonCerrarSesion() {
-    botonCerrarSesion.setOnMouseClicked(mouseEvent ->{
-     try {
-      cambiarInicio();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    });
-  }
-  private void initializeBotonBorrarChat() {
-    botonBorrarChat.setOnMouseClicked(mouseEvent -> {
-      
-      try {
-        chatAPIClient.cleanChat(idChat, new APICallback() {
-          @Override
-          public void onSuccess(Object response) throws IOException {
-            System.out.println("Chat limpiado correctamente");
-            initializeChatList();
-          }
-
-          @Override
-          public void onError(Object error) {
-            System.out.println("Error al limpiar el chat");
-          }
-          
-        });
+    private void eliminarChatAPI() {
         chatAPIClient.deleteChat(idChat, new APICallback() {
-          @Override
-          public void onSuccess(Object response) throws IOException {
-            System.out.println("Chat borrado correctamente");
-            initializeChatList();
-          }
+            @Override
+            public void onSuccess(Object response) throws IOException {
+                System.out.println("Chat borrado correctamente");
+                initializeListaChat();
+            }
 
-          @Override
-          public void onError(Object error) {
-            
-          }
+            @Override
+            public void onError(Object error) {
+                // Handle error if needed
+            }
         });
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    });
-  }
-  private void initializeBotonEditarPerfil() {
-    botonEditarPerfil.setOnMouseClicked(mouseEvent -> {
-      
-      try {
-        userAPIClient.updateUser(userMain.getId(),"elDandy",userMain.getPassword(),userMain.getEmail(),userMain.getPhotourl(),new APICallback() {
+    }
 
-          @Override
-          public void onSuccess(Object response) throws IOException {
-            // TODO Auto-generated method stub
-            System.out.println("Usuario actualizado correctamente");
-            userMain = (User) response;
-            bienvenidoUsuario.setText("Bienvenido don " + userMain.getUsername());
-          }
-
-          @Override
-          public void onError(Object error) {
-            System.out.println("Error al actualizar el usuario");
-          }
-          
-        });
-      } catch (Exception e) {
-        System.out.println("Error al actualizar el usuario");
-
-      }
-    });
-  }
-  private void initializeBotonEnviar() {
-    botonEnviarId.setOnMouseClicked(mouseEvent -> {
-      String mensaje = contenedorMensajeId.getText();
-      try {
-        messageAPIClient.sendMessageToChat(idChat, mensaje, userMain.getId(), new APICallback() {
-          @Override
-          public void onSuccess(Object response) throws IOException {
-            System.out.println("Mensaje enviado correctamente");
-            contenedorMensajeId.setText("");
+    private void initializeMostrarMensajes() {
+        listViewIdHistorial.setOnMouseClicked(mouseEvent -> {
+            ObservableList<Message> mensajesDisponibles = FXCollections.observableArrayList();
+            comprobarNombreChat(mensajesDisponibles);
             mostrarMensajes();
-          }
-
-          @Override
-          public void onError(Object error) {
-
-          }
         });
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    });
-  }
-  private void initializeUserList() throws IOException, InterruptedException {
-    userAPIClient.getAllUsers(new APICallback() {
-      @Override
-      public void onSuccess(Object response) throws IOException {
-        List<User> users = (List<User>) response;
-        for (User user : users) {
-          usuariosDisponibles.add(user);
-          System.out.println(user.getUsername());
+    }
+
+    private void mostrarMensajes() {
+        try {
+            mostrarMensajesAPI();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        // sort alphabetically the list
-        // listChatNuevo.sort(String::compareTo);
-        // items = FXCollections.observableArrayList(listChatNuevo);
+    }
 
-        listViewIdNuevo.setItems(usuariosDisponibles);
-      }
+    private void cargarListViewMensajes(List<Message> messages) {
+        messages.sort((o1, o2) -> o1.getId().compareTo(o2.getId()));
+        mensajesDisponibles.setAll(messages);
+        listViewIdMensajes.setItems(mensajesDisponibles);
+        listViewIdMensajes.setCellFactory(param -> new MessageFXMLListCell());
+    }
 
-      @Override
-      public void onError(Object error) {
+    private void mostrarMensajesAPI() throws IOException {
+        if (idChat == 0) return;
+        messageAPIClient.getMessagesFromChat(idChat, new APICallback() {
+            @Override
+            public void onSuccess(Object response) throws IOException {
+              //function setInterval 2segs.
+                
+              List<Message> messages = (List<Message>) response;
+                cargarListViewMensajes(messages);
+            }
 
-      }
-    });
-  }
+            @Override
+            public void onError(Object error) {
+                // Handle the error according to your needs
+            }
+        });
+    }
 
-  private void initializeChatList() {
-    chatsDisponibles = FXCollections.observableArrayList();
-    chatAPIClient.getAllChatsFromUser(userMain.getId(), new APICallback() {
-      @Override
-      public void onSuccess(Object response) throws IOException {
-        List<Chat> chats = (List<Chat>) response;
-        for (Chat chat : chats) {
-          chatsDisponibles.add(chat);
+    private void comprobarNombreChat(ObservableList<Message> mensajesDisponibles) {
+        Chat selectedChat = listViewIdHistorial.getSelectionModel().getSelectedItem();
+        int idUsuario = selectedChat.getUser1_id();
+        idChat = selectedChat.getId();
+        String usernameToShow = (idUsuario == App.userMain.getId()) ? selectedChat.getUser2_username() : selectedChat.getUser1_username();
+        nombreChatId.setText(usernameToShow);
+    }
+
+    private void initializebotonCerrarSesion() {
+        botonCerrarSesion.setOnMouseClicked(mouseEvent -> {
+            try {
+                cambiarInicio();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void cambiarInicio() throws IOException {
+        App.userMain = null;
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        listViewIdHistorial.setItems(chatsDisponibles);
-      }
+        App.setRoot("login");
+    }
 
-      @Override
-      public void onError(Object error) {
-        System.out.println(error);
-      }
+    private void initializeBotonEditarPerfil() {
+        botonEditarPerfil.setOnMouseClicked(mouseEvent -> {
+            try {
+                actualizarUsuarioAPI();
+            } catch (Exception e) {
+                System.out.println("Error al actualizar el usuario");
+            }
+        });
+    }
 
-    });
+    private void actualizarUsuarioAPI() {
+        try {
+            userAPIClient.updateUser(App.userMain.getId(), "elDandy", App.userMain.getPassword(), App.userMain.getEmail(), App.userMain.getPhotourl(), new APICallback() {
+                @Override
+                public void onSuccess(Object response) throws IOException {
+                    System.out.println("Usuario actualizado correctamente");
+                    App.userMain = (User) response;
+                    bienvenidoUsuario.setText("Bienvenido don " + App.userMain.getUsername());
+                }
 
-  }
+                @Override
+                public void onError(Object error) {
+                    System.out.println("Error al actualizar el usuario");
+                }
+            });
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initializeBotonEnviar() {
+        botonEnviarId.setOnMouseClicked(mouseEvent -> {
+            try {
+                enviarMensajeAPI();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private void enviarMensajeAPI() throws IOException {
+        String mensaje = contenedorMensajeId.getText();
+        messageAPIClient.sendMessageToChat(idChat, mensaje, App.userMain.getId(), new APICallback() {
+            @Override
+            public void onSuccess(Object response) throws IOException {
+                System.out.println("Mensaje enviado correctamente");
+                contenedorMensajeId.setText("");
+                mostrarMensajes();
+            }
+
+            @Override
+            public void onError(Object error) {
+                // Handle error if needed
+            }
+        });
+    }
+
+    private void initializeCrearNuevoChat() {
+        listViewIdNuevo.setOnMouseClicked(mouseEvent -> {
+            try {
+                crearChatAPI();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private void crearChatAPI() {
+        User selectedUser = listViewIdNuevo.getSelectionModel().getSelectedItem();
+        if (selectedUser != null) {
+            int idUser = selectedUser.getId();
+            chatAPIClient.createChat(App.userMain.getId(), idUser, new APICallback() {
+                @Override
+                public void onSuccess(Object response) throws IOException {
+                    System.out.println(response);
+                    obtenerChatAPI();
+                }
+
+                @Override
+                public void onError(Object error) {
+                    // Handle error if needed
+                }
+            });
+        }
+    }
+
+    private void initializeListaUsuario() {
+        try {
+            obtenerUsuarioAPI();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void obtenerUsuarioAPI() throws IOException, InterruptedException {
+        userAPIClient.getAllUsers(new APICallback() {
+            @Override
+            public void onSuccess(Object response) throws IOException {
+                List<User> users = (List<User>) response;
+                usuariosDisponibles.setAll(users);
+                listViewIdNuevo.setItems(usuariosDisponibles);
+            }
+
+            @Override
+            public void onError(Object error) {
+                // Handle error if needed
+            }
+        });
+    }
+
+    private void initializeListaChat() {
+        obtenerChatAPI();
+    }
+
+    private void obtenerChatAPI() {
+        chatAPIClient.getAllChatsFromUser(App.userMain.getId(), new APICallback() {
+            @Override
+            public void onSuccess(Object response) throws IOException {
+                List<Chat> chats = (List<Chat>) response;
+                chatsDisponibles.setAll(chats);
+                listViewIdHistorial.setItems(chatsDisponibles);
+
+              listViewIdHistorial.setCellFactory(param -> new ChatFXMLListCell());
+            }
+
+            @Override
+            public void onError(Object error) {
+                System.out.println(error);
+            }
+        });
+    }
 }

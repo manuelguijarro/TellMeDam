@@ -67,13 +67,15 @@ public class Chat {
     public void setUser2_username(String user2_username) {
         this.user2_username = user2_username;
     }
+
     @Override
     public String toString() {
-      if (user1_id == userMain.getId()) {
-        return user2_username;
-    } else {
-        return user1_username;
-    }
-   
+        return "Chat{" +
+                "id=" + id +
+                ", user1_id=" + user1_id +
+                ", user1_username='" + user1_username + '\'' +
+                ", user2_id=" + user2_id +
+                ", user2_username='" + user2_username + '\'' +
+                '}';
     }
 }

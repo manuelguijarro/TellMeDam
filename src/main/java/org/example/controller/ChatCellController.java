@@ -14,7 +14,7 @@ public class ChatCellController {
     public void setChat(int user1_id, String user1_username, int user2_id, String user2_username) {
 
         if (user1_id == userMain.getId()) {
-            nombreChatId.setText(user1_username);
+            nombreChatId.setText(user2_username);
         } else {
             nombreChatId.setText(user1_username);
         }
