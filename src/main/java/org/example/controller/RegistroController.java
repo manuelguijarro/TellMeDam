@@ -13,6 +13,8 @@ import org.example.api.APICallback;
 import org.example.App;
 import org.example.api.UserAPIClient;
 import org.example.model.Error;
+import org.example.model.Log;
+
 public class RegistroController {
     @FXML
     private Label mensajeAlerta;
@@ -23,81 +25,46 @@ public class RegistroController {
     @FXML
     private TextField contraseniaUsuarioTextField;
     private UserAPIClient userAPIClient;
-    //generate inizalizer function
+
     @FXML
     public void initialize() {
         mensajeAlerta.setVisible(false);
-      
-    }
-    private String leerLog(String filePath) throws IOException {
-        String file = "src/main/java/org/example/logs/registro.log";
-        String line;
-        String log = "";
-        try{
-            BufferedReader bfr = new BufferedReader(new FileReader(file));
-            while ((line = bfr.readLine()) != null) {
-                log += line + "\n";
-            }
-            bfr.close();
-            return log;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return log;
 
     }
-    private void registrarseLog(String mensaje) throws IOException, InterruptedException {
-        // ...
 
-        // Generate a function and save the mensaje string in a file called registro.log
-        String filePath = "src/main/java/org/example/logs/registro.log";
-        String log = leerLog(filePath);
-        FileWriter writer = new FileWriter(filePath);
-        Date date = new Date();
-        String formattedDate = date.toString();
-        writer.append(log+formattedDate + ": " + mensaje + "\n");
-        
-        
-        writer.close();
-        
-        // ...
-    }
     @FXML
     private void switchToLogin() throws IOException {
         App.setRoot("login");
-    }@FXML
+    }
+
+    @FXML
     private void registrarse() throws IOException, InterruptedException {
+        Log log = new Log("");
+
         String mensaje = "";
         String nombreUsuario = nombreUsuarioTextField.getText();
         String emailUsuario = emailUsuarioTextField.getText();
         String contraseniaUsuario = contraseniaUsuarioTextField.getText();
-        if(emailUsuario.isEmpty() || contraseniaUsuario.isEmpty()){
-            mensaje = "Failed registration[campos vacios]: email o contraseña no pueden estar vacíos.";
-            mensajeAlerta.setText(mensaje);
-            mensajeAlerta.setVisible(true);
-            System.out.println(mensaje);
-            registrarseLog(mensaje);
-            return;
-        }
-        if (!emailUsuario.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$")) {
-          mensaje = "Failed registration[email]: '" + emailUsuario+"'" + " no es un email válido.";
-          mensajeAlerta.setText(mensaje);
-          mensajeAlerta.setVisible(true);
-          System.out.println(mensaje);
-          registrarseLog(mensaje);
-          return;
-      }
-      if (!contraseniaUsuario.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
-        mensaje = "Failed registration[contraseña]: '"+contraseniaUsuario+"'" + " no es una contraseña válida.";
+
+        if (emailUsuario.isEmpty() || contraseniaUsuario.isEmpty())
+            mensaje = ": Failed registration[campos vacios]: email o contraseña no pueden estar vacíos.";
+
+        if (!emailUsuario.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"))
+            mensaje = ": Failed registration[email]: '" + emailUsuario + "'" + " no es un email válido.";
+
+        if (!contraseniaUsuario.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"))
+            mensaje = ": Failed registration[contraseña]: '" + contraseniaUsuario + "'" + " no es una contraseña válida.";
+
         mensajeAlerta.setText(mensaje);
-        mensajeAlerta.setVisible(true);  
+        if (mensaje == "") mensajeAlerta.setVisible(false);
+        else mensajeAlerta.setVisible(true);
+
+        mensajeAlerta.setText(mensaje);
         System.out.println(mensaje);
-        registrarseLog(mensaje);
-          return;
-      }
-      mensaje = "Exito en el registro.";
-      mensajeAlerta.setVisible(true);
-        //generate a function and save the mensaje string in a file call registro.log and save it in a folder called logs in the project root folder.
+        log.setMensajeLog(mensaje);
+        log.generarLog("registro");
+        mensaje = "Exito en el registro.";
+        mensajeAlerta.setVisible(true);
 
         userAPIClient = new UserAPIClient();
         userAPIClient.register(emailUsuario, nombreUsuario, contraseniaUsuario, new APICallback() {
@@ -108,7 +75,7 @@ public class RegistroController {
 
             @Override
             public void onError(Object error) {
-                System.out.println(((Error) error).getError() );
+                System.out.println(((Error) error).getError());
             }
         });
     }

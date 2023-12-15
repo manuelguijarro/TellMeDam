@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
 import org.example.api.APICallback;
 import org.example.App;
 import org.example.api.UserAPIClient;
+import org.example.model.Log;
 import org.example.model.User;
 import org.example.model.Error;
 
@@ -29,38 +30,6 @@ public class LoginController {
   @FXML
   private UserAPIClient userAPIClient;
 
-  private String leerLog(String filePath) throws IOException {
-    String file = "src/main/java/org/example/logs/login.log";
-    String line;
-    String log = "";
-    try {
-      BufferedReader bfr = new BufferedReader(new FileReader(file));
-      while ((line = bfr.readLine()) != null) {
-        log += line + "\n";
-      }
-      bfr.close();
-      return log;
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return log;
-
-  }
-
-  private void logearseLog(String mensaje) throws IOException, InterruptedException {
-    // ...
-
-    // Generate a function and save the mensaje string in a file called registro.log
-    String filePath = "src/main/java/org/example/logs/login.log";
-    String log = leerLog(filePath);
-    FileWriter writer = new FileWriter(filePath);
-
-    writer.append(log + mensaje + "\n");
-
-    writer.close();
-
-    // ...
-  }
 
   @FXML
   private void switchToInicio() throws IOException, InterruptedException {
@@ -77,27 +46,33 @@ public class LoginController {
         userMain = (User) response;
         System.out.println("Exito en el login");
         // Enviar a inicioPagina
+
         App.setRoot("inicio");
       }
-
+      
       @Override
       public void onError(Object error) {
+        
         Error e = (Error) error;
-        Date date = new Date();
-        String formattedDate = date.toString();
-        String mensajeError = formattedDate + ": " + "Failed registration[" + e.getError() + "]";
+        devolverMensajeError(e);
 
+        
+      }
+    });
+  }
+private void devolverMensajeError(Error e) {
+        
+
+        String mensajeError = "Failed registration[" + e.getError() + "]";
         System.out.println(mensajeError);
         try {
-          logearseLog(mensajeError);
+          Log log = new Log(mensajeError);
+          log.generarLog("login");
         } catch (Exception e1) {
           // TODO Auto-generated catch block
           e1.printStackTrace();
         }
       }
-    });
-  }
-
   @FXML
   private void switchToRegistro() throws IOException {
     App.setRoot("registro");
